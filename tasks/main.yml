@@ -1,0 +1,12 @@
+---
+- rollback_facts:
+    current_path: "{{ current_path }}"
+    releases_path: "{{ releases_path }}"
+
+- name: update symlink to previous version
+  file:
+    src: "{{ releases_path }}/{{ rollback.previous_deployment_path }}"
+    dest: "{{ current_path }}"
+    state: "link"
+    force: "yes"
+  when: rollback.previous_deployment_path

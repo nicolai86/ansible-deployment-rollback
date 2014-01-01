@@ -1,0 +1,51 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# (c) 2013, Raphael Randschau <nicolai86@me.com>
+
+DOCUMENTATION = '''
+---
+module: rollback_facts
+short_description: This module collects basic deployment informations
+options: []
+'''
+
+import os
+
+def current_release_path(module):
+    return os.path.basename(os.path.realpath(module.params['current_path']))
+
+def find_previous_deployment(module):
+    os.chdir(module.params['releases_path'])
+
+    directories = filter(os.path.isdir, os.listdir('.'))
+    directories.sort(key=lambda x: os.path.getctime(x))
+
+    index = directories.index(current_release_path(module))
+    if index > 0:
+        return directories[index - 1]
+    else:
+        return None
+
+def gather_facts(module):
+    return {
+        'rollback': {
+            'previous_deployment_path': find_previous_deployment(module)
+        }
+    }
+
+def main():
+    module = AnsibleModule(argument_spec = dict(
+        current_path  = dict(required=True, type='str'),
+        releases_path = dict(required=True, type='str')
+    ))
+
+    result = {}
+    result['ansible_facts'] = gather_facts(module)
+
+    module.exit_json(**result)
+
+# this is magic, see lib/ansible/module_common.py
+#<<INCLUDE_ANSIBLE_MODULE_COMMON>>
+
+main()

@@ -1,0 +1,5 @@
+# path containing all releases
+releases_path: "{{ deploy_to }}/releases"
+
+# path to current symlink, which should be replaced
+current_path: "{{ deploy_to }}/current"
