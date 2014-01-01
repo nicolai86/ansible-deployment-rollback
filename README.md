@@ -1,7 +1,10 @@
 ansible-deployment-rollback
 ===========================
 
-rollback for ansible-rails-deployment
+rollback for ansible-rails-deployment.
+
+This just changes the symlink of the current directory to the release prior to the current.
+If no prior release exists nothing happens.
 
 example usage:
 
